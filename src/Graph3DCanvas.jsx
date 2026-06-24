@@ -54,7 +54,7 @@ export default function Graph3DCanvas({
     const texture = new THREE.CanvasTexture(canvas);
     const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
     const sprite = new THREE.Sprite(material);
-    sprite.scale.set(16, 16, 1);
+    sprite.scale.set(8.5, 8.5, 1);
     return sprite;
   };
 
@@ -230,7 +230,7 @@ export default function Graph3DCanvas({
         // Draw text sprite for weights (if weighted)
         if (e.weight !== undefined) {
           const weightSprite = createTextSprite(e.weight, isMst ? '#346538' : '#787774');
-          weightSprite.scale.set(12, 12, 1);
+          weightSprite.scale.set(6.5, 6.5, 1);
           weightSprite.position.copy(position).add(new THREE.Vector3(0, 4, 0));
           scene.add(weightSprite);
         }

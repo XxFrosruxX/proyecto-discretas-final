@@ -432,19 +432,19 @@
   background-size: 16px 16px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 350px;
-  flex-grow: 1;
+  display: block; /* Remove flex to allow natural scrolling */
+  height: 320px;
 }
 
 .svg-canvas {
   width: 100%;
-  min-width: 600px;
-  min-height: 450px;
+  height: 450px; /* Increased height to allow scrolling */
+  max-width: 600px; /* Prevent it from scaling up horizontally too much */
+  margin: 0 auto;
+  display: block;
 }
 
 /* SVG Rendering Classes */
