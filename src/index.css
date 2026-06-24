@@ -1,0 +1,77 @@
+:root {
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Color Palette - Minimalist Bone & Warm Off-White */
+  --bg-main: #F7F6F3; /* Warm Bone/Off-White */
+  --bg-card: #FFFFFF; /* Pure White Card */
+  --bg-card-hover: #FBFBFA;
+  --bg-sidebar: #FFFFFF; /* White Sidebar */
+  --bg-code: #F9F9F8; /* Light gray code box */
+  --border: #EAEAEA; /* Crisp light-gray border */
+  --border-focus: #111111; /* Sharp off-black focus */
+  
+  --text-main: #2F3437; /* Off-black/charcoal body text */
+  --text-bright: #111111; /* Off-black header/bold text */
+  --text-muted: #787774; /* Warm muted gray */
+  
+  --primary: #111111; /* Crisp off-black for main actions/titles */
+  --primary-glow: #F7F6F3; /* Very light background for tags */
+  --primary-border: #EAEAEA;
+  
+  --secondary: #346538; /* Muted Green */
+  --secondary-glow: #EDF3EC;
+  --danger: #9F2F2D; /* Muted Red */
+  --danger-glow: #FDEBEC;
+  --warning: #956400; /* Muted Yellow */
+  --warning-glow: #FBF3DB;
+  --info: #1F6C9F; /* Muted Blue */
+  --info-glow: #E1F3FE;
+
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-glow: none;
+  --radius: 8px; /* Crisp corners */
+  --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
