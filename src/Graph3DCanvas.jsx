@@ -54,7 +54,7 @@ export default function Graph3DCanvas({
     const texture = new THREE.CanvasTexture(canvas);
     const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
     const sprite = new THREE.Sprite(material);
-    sprite.scale.set(6, 6, 1);
+    sprite.scale.set(16, 16, 1);
     return sprite;
   };
 
@@ -105,8 +105,8 @@ export default function Graph3DCanvas({
     scene.add(pointLight);
 
     // Grid helper (subtle, aligned horizontally)
-    const gridHelper = new THREE.GridHelper(300, 30, 0xeaeaea, 0xf0f0f0);
-    gridHelper.position.y = -80;
+    const gridHelper = new THREE.GridHelper(500, 50, 0xeaeaea, 0xf0f0f0);
+    gridHelper.position.y = -220;
     scene.add(gridHelper);
 
     // 6. Coordinates & Object Construction
@@ -230,7 +230,7 @@ export default function Graph3DCanvas({
         // Draw text sprite for weights (if weighted)
         if (e.weight !== undefined) {
           const weightSprite = createTextSprite(e.weight, isMst ? '#346538' : '#787774');
-          weightSprite.scale.set(4.5, 4.5, 1);
+          weightSprite.scale.set(12, 12, 1);
           weightSprite.position.copy(position).add(new THREE.Vector3(0, 4, 0));
           scene.add(weightSprite);
         }
