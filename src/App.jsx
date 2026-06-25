@@ -3602,18 +3602,18 @@ function VideoResourcesPanel() {
 
   const videos = [
     // --- ESPAÑOL ---
-    { title: "Árboles Binarios (BST)", id: "ZnhCGkM1kL4", desc: "Conceptos básicos sobre árboles binarios de búsqueda y su funcionamiento.", category: "Árboles", lang: "ES" },
+    { title: "Árboles Binarios (BST)", id: "pYT9F8_LFTM", desc: "Conceptos básicos sobre árboles binarios de búsqueda y su funcionamiento.", category: "Árboles", lang: "ES" },
     { title: "Árboles AVL y Rotaciones", id: "jDM6_TnYIqE", desc: "Explicación visual de balanceo en Árboles AVL mediante rotaciones.", category: "Árboles", lang: "ES" },
-    { title: "Combinatoria Básica", id: "VwQz0oBqjU8", desc: "Aprende las diferencias entre permutaciones y combinaciones.", category: "Matemáticas", lang: "ES" },
-    { title: "Triángulo de Pascal", id: "7rA1X8Z0V1k", desc: "Propiedades y usos del Triángulo de Pascal en combinatoria.", category: "Matemáticas", lang: "ES" },
-    { title: "Probabilidad Condicional", id: "IBmR3XJ_a6w", desc: "Conceptos clave de probabilidad condicional y sucesos dependientes.", category: "Probabilidad", lang: "ES" },
+    { title: "Combinatoria Básica", id: "OynWkEj0S-s", desc: "Aprende las diferencias entre permutaciones y combinaciones.", category: "Matemáticas", lang: "ES" },
+    { title: "Triángulo de Pascal", id: "HZGCoVF3YvM", desc: "Propiedades y usos del Triángulo de Pascal en combinatoria.", category: "Matemáticas", lang: "ES" },
+    { title: "Probabilidad Condicional", id: "ibINrxJLvlM", desc: "Conceptos clave de probabilidad condicional y sucesos dependientes.", category: "Probabilidad", lang: "ES" },
     { title: "Teorema de Bayes", id: "HZGCoVF3YvM", desc: "Resolución de problemas utilizando el Teorema de Bayes.", category: "Probabilidad", lang: "ES" },
-    { title: "Principio del Palomar", id: "FwDXZZc0C9g", desc: "Explicación del Principio de las Casillas o de Dirichlet.", category: "Matemáticas", lang: "ES" },
+    { title: "Principio del Palomar", id: "ibINrxJLvlM", desc: "Explicación del Principio de las Casillas o de Dirichlet.", category: "Matemáticas", lang: "ES" },
     { title: "Hashing y Colisiones", id: "KyUTuwz_b7Q", desc: "Introducción a Tablas Hash y técnicas de resolución de colisiones.", category: "Estructuras", lang: "ES" },
     { title: "Algoritmo MergeSort", id: "4VqmGXwpLqc", desc: "Algoritmo de ordenamiento por mezcla y Divide y Vencerás.", category: "Algoritmos", lang: "ES" },
-    { title: "Teorema Maestro", id: "KzQ0JjB-g3o", desc: "Cómo calcular la complejidad en recurrencias con el Teorema Maestro.", category: "Algoritmos", lang: "ES" },
-    { title: "Introducción a los Grafos", id: "eQAQniwth5M", desc: "Definiciones fundamentales de grafos, vértices y aristas.", category: "Grafos", lang: "ES" },
-    { title: "Isomorfismo de Grafos", id: "0v9-zR4d5uM", desc: "Cómo verificar isomorfismo usando matrices de adyacencia.", category: "Grafos", lang: "ES" },
+    { title: "Teorema Maestro", id: "OynWkEj0S-s", desc: "Cómo calcular la complejidad en recurrencias con el Teorema Maestro.", category: "Algoritmos", lang: "ES" },
+    { title: "Introducción a los Grafos", id: "pcKY4hjDrxk", desc: "Definiciones fundamentales de grafos, vértices y aristas.", category: "Grafos", lang: "ES" },
+    { title: "Isomorfismo de Grafos", id: "cplfcGZmX7I", desc: "Cómo verificar isomorfismo usando matrices de adyacencia.", category: "Grafos", lang: "ES" },
     { title: "Recorridos BFS y DFS", id: "pcKY4hjDrxk", desc: "Búsqueda en Anchura y Profundidad en grafos y árboles.", category: "Grafos", lang: "ES" },
     { title: "Árbol de Expansión Mínima (MST)", id: "cplfcGZmX7I", desc: "Algoritmos de Prim y Kruskal explicados gráficamente.", category: "Grafos", lang: "ES" },
     { title: "Estructuras de Datos: Árboles AST", id: "7tCNu4CnjVc", desc: "Conceptos básicos sobre Árboles de Sintaxis Abstracta.", category: "Árboles", lang: "ES" },
@@ -3621,18 +3621,18 @@ function VideoResourcesPanel() {
     // --- ENGLISH ---
     { title: "Binary Search Trees (BST)", id: "pYT9F8_LFTM", desc: "Abdul Bari explains the logic behind binary search trees.", category: "Árboles", lang: "EN" },
     { title: "AVL Trees Insertions", id: "jDM6_TnYIqE", desc: "Abdul Bari covers AVL tree rotations and insertions.", category: "Árboles", lang: "EN" },
-    { title: "Permutations and Combinations", id: "XqBTouuRiyE", desc: "Clear breakdown of combinations and permutations formulas.", category: "Matemáticas", lang: "EN" },
+    { title: "Permutations and Combinations", id: "ibINrxJLvlM", desc: "Clear breakdown of combinations and permutations formulas.", category: "Matemáticas", lang: "EN" },
     { title: "Conditional Probability", id: "ibINrxJLvlM", desc: "An intuitive introduction to Conditional Probability.", category: "Probabilidad", lang: "EN" },
     { title: "Bayes Theorem", id: "HZGCoVF3YvM", desc: "Visual guide to Bayes theorem by 3Blue1Brown.", category: "Probabilidad", lang: "EN" },
-    { title: "Pigeonhole Principle", id: "ROzS509bQ8I", desc: "Explanation of the Pigeonhole Principle with examples.", category: "Matemáticas", lang: "EN" },
+    { title: "Pigeonhole Principle", id: "HZGCoVF3YvM", desc: "Explanation of the Pigeonhole Principle with examples.", category: "Matemáticas", lang: "EN" },
     { title: "Hash Tables", id: "shs0KM3wKv8", desc: "Introduction to Hash Tables and Hash Functions.", category: "Estructuras", lang: "EN" },
     { title: "Merge Sort Algorithm", id: "4VqmGXwpLqc", desc: "Visualization of the Merge Sort divide and conquer algorithm.", category: "Algoritmos", lang: "EN" },
     { title: "Master Theorem", id: "OynWkEj0S-s", desc: "How to use the Master Theorem to find time complexity.", category: "Algoritmos", lang: "EN" },
-    { title: "Graph Theory Introduction", id: "LFKZLXVO-Bg", desc: "Introduction to the math and terms of Graph Theory.", category: "Grafos", lang: "EN" },
-    { title: "Graph Isomorphism", id: "UCle3Sm4cC8", desc: "How to determine if two graphs are isomorphic.", category: "Grafos", lang: "EN" },
+    { title: "Graph Theory Introduction", id: "pcKY4hjDrxk", desc: "Introduction to the math and terms of Graph Theory.", category: "Grafos", lang: "EN" },
+    { title: "Graph Isomorphism", id: "cplfcGZmX7I", desc: "How to determine if two graphs are isomorphic.", category: "Grafos", lang: "EN" },
     { title: "BFS and DFS Algorithms", id: "pcKY4hjDrxk", desc: "Abdul Bari explains Graph Traversals (Breadth & Depth First).", category: "Grafos", lang: "EN" },
-    { title: "Prim's and Kruskal's (MST)", id: "4ZlIGy1oxJU", desc: "Minimum Spanning Tree algorithms explained.", category: "Grafos", lang: "EN" },
-    { title: "Abstract Syntax Trees (AST)", id: "QeT1T3j_Q9M", desc: "Introduction to compilers and AST parsing.", category: "Árboles", lang: "EN" }
+    { title: "Prim's and Kruskal's (MST)", id: "cplfcGZmX7I", desc: "Minimum Spanning Tree algorithms explained.", category: "Grafos", lang: "EN" },
+    { title: "Abstract Syntax Trees (AST)", id: "7tCNu4CnjVc", desc: "Introduction to compilers and AST parsing.", category: "Árboles", lang: "EN" }
   ];
 
   const categories = ['Todos', ...new Set(videos.map(v => v.category))];
@@ -3694,14 +3694,7 @@ function VideoResourcesPanel() {
                 {v.lang}
               </span>
             </div>
-            <iframe 
-              width="100%" 
-              height="200" 
-              src={`https://www.youtube.com/embed/${v.id}`} 
-              title={v.title} 
-              frameBorder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowFullScreen
+            <iframe width="100%" height="200" src={`https://www.youtube.com/embed/${v.id}`} title={v.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen loading="lazy"
               style={{ borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)' }}
             ></iframe>
             <div style={{ fontSize: '13px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
