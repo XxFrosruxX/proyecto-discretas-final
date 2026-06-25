@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+import { jsPDF } from 'jspdf';
 import Graph3DCanvas from './Graph3DCanvas';
 
 // ============================================================================
@@ -1475,6 +1476,18 @@ PSEUDOCODES['arboles-recorridos'].usageSteps = [
   "Recorridos del Árbol: Observa las cadenas resultantes en Preorden, Inorden, Postorden y BFS (por niveles).",
   "Usa los botones [ 2D | 3D ] para explorar el árbol sintáctico en un espacio interactivo de 3 dimensiones."
 ];
+
+PSEUDOCODES['videos'] = {
+  title: 'Recursos y Videos Educativos',
+  description: 'Colección de videos recomendados para comprender visualmente los conceptos teóricos y matemáticos de Estructuras Discretas II.',
+  instructions: 'Selecciona y reproduce cualquiera de los videos directamente en esta plataforma para repasar los temas de Árboles, Grafos, Recurrencias y Probabilidad.',
+  algorithms: [],
+  usageSteps: [
+    "Filtra la lista de videos por categoría utilizando los botones superiores.",
+    "Presiona el botón de Play en cualquier recuadro para iniciar la reproducción.",
+    "Aplica los conceptos aprendidos en las otras calculadoras del simulador."
+  ]
+};
 
 function App() {
   const [activeTab, setActiveTab] = useState('bst-avl');
@@ -3511,15 +3524,44 @@ function CodeViewer({ name, pseudo, js }) {
   const [activeLang, setActiveLang] = useState('pseudo');
   const [collapsed, setCollapsed] = useState(true);
 
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text(name, 10, 20);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text('Pseudocódigo:', 10, 30);
+    doc.setFont("courier", "normal");
+    const pseudoLines = doc.splitTextToSize(pseudo || 'No disponible', 180);
+    doc.text(pseudoLines, 10, 40);
+
+    let jsStartY = 40 + (pseudoLines.length * 5) + 10;
+    
+    if (js) {
+      doc.setFont("helvetica", "bold");
+      doc.text('JavaScript:', 10, jsStartY);
+      doc.setFont("courier", "normal");
+      const jsLines = doc.splitTextToSize(js, 180);
+      doc.text(jsLines, 10, jsStartY + 10);
+    }
+
+    doc.save(`${name.replace(/ /g, '_')}.pdf`);
+  };
+
   return (
     <div className="code-container" style={{ borderStyle: 'solid' }}>
       <div className="code-header" style={{ cursor: 'pointer' }} onClick={() => setCollapsed(!collapsed)}>
         <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-bright)', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Code size={16} style={{ color: 'var(--primary)' }} /> {name}
         </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <button className="btn btn-primary btn-sm" style={{ padding: '4px 12px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={(e) => { e.stopPropagation(); handleDownloadPDF(); }}>
+            Descargar PDF
+          </button>
           {!collapsed && (
-            <div className="code-tabs">
+            <div className="code-tabs" onClick={(e) => e.stopPropagation()}>
               <button 
                 className={`code-tab ${activeLang === 'pseudo' ? 'active' : ''}`}
                 onClick={() => setActiveLang('pseudo')}
@@ -3555,12 +3597,28 @@ function CodeViewer({ name, pseudo, js }) {
 
 // --- 0. VIDEO RESOURCES PANEL ---
 function VideoResourcesPanel() {
+  const [filter, setFilter] = useState('Todos');
+
   const videos = [
-    { title: "Estructuras de Datos: Árboles AST", id: "7tCNu4CnjVc", desc: "Conceptos básicos sobre Árboles de Sintaxis Abstracta." },
-    { title: "Grafos y Algoritmo de Dijkstra", id: "EFg3u_E6eHU", desc: "Explicación del algoritmo de la ruta más corta." },
-    { title: "MergeSort y Algoritmos Divide y Vencerás", id: "4VqmGXwpLqc", desc: "Clase sobre recursividad y partición de arreglos." },
-    { title: "Probabilidad y Teorema de Bayes", id: "HZGCoVF3YvM", desc: "Fundamentos de probabilidad condicional." }
+    { title: "Árboles Binarios (BST)", id: "ZnhCGkM1kL4", desc: "Conceptos básicos sobre árboles binarios de búsqueda y su funcionamiento.", category: "Árboles" },
+    { title: "Árboles AVL y Rotaciones", id: "jDM6_TnYIqE", desc: "Explicación visual de balanceo en Árboles AVL mediante rotaciones.", category: "Árboles" },
+    { title: "Combinatoria Básica", id: "VwQz0oBqjU8", desc: "Aprende las diferencias entre permutaciones y combinaciones.", category: "Matemáticas" },
+    { title: "Triángulo de Pascal", id: "7rA1X8Z0V1k", desc: "Propiedades y usos del Triángulo de Pascal en combinatoria.", category: "Matemáticas" },
+    { title: "Probabilidad Condicional", id: "IBmR3XJ_a6w", desc: "Conceptos clave de probabilidad condicional y sucesos dependientes.", category: "Probabilidad" },
+    { title: "Teorema de Bayes", id: "HZGCoVF3YvM", desc: "Resolución de problemas utilizando el Teorema de Bayes.", category: "Probabilidad" },
+    { title: "Principio del Palomar", id: "FwDXZZc0C9g", desc: "Explicación del Principio de las Casillas o de Dirichlet.", category: "Matemáticas" },
+    { title: "Hashing y Colisiones", id: "KyUTuwz_b7Q", desc: "Introducción a Tablas Hash y técnicas de resolución de colisiones.", category: "Estructuras" },
+    { title: "Algoritmo MergeSort", id: "4VqmGXwpLqc", desc: "Algoritmo de ordenamiento por mezcla y Divide y Vencerás.", category: "Algoritmos" },
+    { title: "Teorema Maestro", id: "KzQ0JjB-g3o", desc: "Cómo calcular la complejidad en recurrencias con el Teorema Maestro.", category: "Algoritmos" },
+    { title: "Introducción a los Grafos", id: "eQAQniwth5M", desc: "Definiciones fundamentales de grafos, vértices y aristas.", category: "Grafos" },
+    { title: "Isomorfismo de Grafos", id: "0v9-zR4d5uM", desc: "Cómo verificar isomorfismo usando matrices de adyacencia.", category: "Grafos" },
+    { title: "Recorridos BFS y DFS", id: "pcKY4hjDrxk", desc: "Búsqueda en Anchura y Profundidad en grafos y árboles.", category: "Grafos" },
+    { title: "Árbol de Expansión Mínima (MST)", id: "cplfcGZmX7I", desc: "Algoritmos de Prim y Kruskal explicados gráficamente.", category: "Grafos" },
+    { title: "Estructuras de Datos: Árboles AST", id: "7tCNu4CnjVc", desc: "Conceptos básicos sobre Árboles de Sintaxis Abstracta.", category: "Árboles" }
   ];
+
+  const categories = ['Todos', ...new Set(videos.map(v => v.category))];
+  const filteredVideos = filter === 'Todos' ? videos : videos.filter(v => v.category === filter);
 
   return (
     <div className="demo-layout">
@@ -3569,12 +3627,28 @@ function VideoResourcesPanel() {
           <Video size={14} /> Repositorio de Videos Educativos
         </div>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
-          Aquí encontrarás explicaciones paso a paso de los temas fundamentales de Estructuras Discretas II. Estos videos te ayudarán a afianzar los conceptos matemáticos implementados en los simuladores.
+          Aquí encontrarás explicaciones paso a paso de todos los temas fundamentales de Estructuras Discretas II. Estos videos te ayudarán a afianzar los conceptos matemáticos implementados en los simuladores.
         </p>
+
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {categories.map(cat => (
+            <button 
+              key={cat} 
+              className={`btn btn-sm ${filter === cat ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setFilter(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-          {videos.map((v, i) => (
+          {filteredVideos.map((v, i) => (
             <div key={i} className="math-block" style={{ margin: 0, padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ fontWeight: 'bold', color: 'var(--text-main)', fontSize: '14px' }}>{v.title}</div>
+              <div style={{ fontWeight: 'bold', color: 'var(--text-main)', fontSize: '14px', display: 'flex', alignItems: 'center' }}>
+                <span className="theme-badge" style={{ padding: '2px 6px', fontSize: '10px', marginRight: '6px' }}>{v.category}</span>
+                {v.title}
+              </div>
               <iframe 
                 width="100%" 
                 height="180" 
@@ -3595,4 +3669,4 @@ function VideoResourcesPanel() {
 }
 
 export default App;
-PSEUDOCODES['videos'] = { title: 'Recursos y Videos Educativos', description: 'Colecci�n de videos recomendados para comprender visualmente los conceptos te�ricos y matem�ticos de Estructuras Discretas II.', instructions: 'Selecciona y reproduce cualquiera de los videos directamente en esta plataforma para repasar los temas de �rboles, Grafos, Recurrencias y Probabilidad.', algorithms: [], usageSteps: ['Explora la lista de videos disponibles.', 'Presiona el bot�n de Play en cualquier recuadro para iniciar la reproducci�n.', 'Aplica los conceptos aprendidos en las otras calculadoras del simulador.'] };
+
