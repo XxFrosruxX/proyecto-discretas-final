@@ -3599,6 +3599,8 @@ function CodeViewer({ name, pseudo, js }) {
 function VideoResourcesPanel() {
   const [catFilter, setCatFilter] = useState('Todos');
   const [langFilter, setLangFilter] = useState('Todos');
+  const [currentPage, setCurrentPage] = useState(1);
+  const videosPerPage = 6;
 
   const videos = [
     // --- ESPAÑOL ---
@@ -3644,13 +3646,23 @@ function VideoResourcesPanel() {
     return matchCat && matchLang;
   });
 
+  // Pagination Logic
+  const totalPages = Math.ceil(filteredVideos.length / videosPerPage);
+  const indexOfLastVideo = currentPage * videosPerPage;
+  const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
+  const currentVideos = filteredVideos.slice(indexOfFirstVideo, indexOfLastVideo);
+
+  // Reset page when filters change
+  const handleCatChange = (cat) => { setCatFilter(cat); setCurrentPage(1); };
+  const handleLangChange = (lang) => { setLangFilter(lang); setCurrentPage(1); };
+
   return (
     <div className="demo-panel" style={{ width: '100%', maxWidth: '100%', margin: 0 }}>
       <div className="demo-title">
         <Video size={14} /> Repositorio de Videos Educativos
       </div>
       <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
-        Aquí encontrarás explicaciones paso a paso de todos los temas fundamentales de Estructuras Discretas II. Estos videos te ayudarán a afianzar los conceptos matemáticos implementados en los simuladores.
+        Aquí encontrarás explicaciones paso a paso de todos los temas fundamentales de Estructuras Discretas II.
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
@@ -3661,7 +3673,7 @@ function VideoResourcesPanel() {
               <button 
                 key={cat} 
                 className={`btn btn-sm ${catFilter === cat ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => setCatFilter(cat)}
+                onClick={() => handleCatChange(cat)}
               >
                 {cat}
               </button>
@@ -3676,7 +3688,7 @@ function VideoResourcesPanel() {
               <button 
                 key={lang} 
                 className={`btn btn-sm ${langFilter === lang ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => setLangFilter(lang)}
+                onClick={() => handleLangChange(lang)}
               >
                 {lang === 'ES' ? 'Español' : lang === 'EN' ? 'Inglés' : 'Todos'}
               </button>
@@ -3686,7 +3698,7 @@ function VideoResourcesPanel() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-        {filteredVideos.map((v, i) => (
+        {currentVideos.map((v, i) => (
           <div key={i} className="math-block" style={{ margin: 0, padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', background: 'var(--bg-layer-2)', border: '1px solid var(--border)' }}>
             <div style={{ fontWeight: '600', color: 'var(--text-main)', fontSize: '15px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
               <span style={{ lineHeight: '1.4' }}>{v.title}</span>
@@ -3694,7 +3706,15 @@ function VideoResourcesPanel() {
                 {v.lang}
               </span>
             </div>
-            <iframe width="100%" height="200" src={`https://www.youtube.com/embed/${v.id}`} title={v.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen loading="lazy"
+            <iframe 
+              width="100%" 
+              height="200" 
+              src={`https://www.youtube.com/embed/${v.id}`} 
+              title={v.title} 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+              loading="lazy"
               style={{ borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)' }}
             ></iframe>
             <div style={{ fontSize: '13px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -3704,15 +3724,57 @@ function VideoResourcesPanel() {
           </div>
         ))}
         
-        {filteredVideos.length === 0 && (
+        {currentVideos.length === 0 && (
           <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', gridColumn: '1 / -1' }}>
             No se encontraron videos para los filtros seleccionados.
           </div>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', gap: '15px' }}>
+          <button 
+            className="btn btn-secondary" 
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            style={{ padding: '8px 16px' }}
+          >
+            Anterior
+          </button>
+          
+          <div style={{ display: 'flex', gap: '6px' }}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                style={{
+                  width: '32px', height: '32px', borderRadius: '4px',
+                  border: '1px solid',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '13px', fontWeight: 'bold', cursor: 'pointer',
+                  backgroundColor: currentPage === page ? 'var(--primary)' : 'var(--bg-layer-1)',
+                  color: currentPage === page ? 'white' : 'var(--text-main)',
+                  borderColor: currentPage === page ? 'var(--primary)' : 'var(--border)'
+                }}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button 
+            className="btn btn-secondary" 
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            style={{ padding: '8px 16px' }}
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
 export default App;
 
