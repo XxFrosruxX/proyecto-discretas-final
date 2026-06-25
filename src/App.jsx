@@ -1627,6 +1627,7 @@ function App() {
           </section>
 
           {/* Double-Bezel Card (Outer Shell) */}
+          {activeTab !== 'videos' && (
           <section className="card-shell">
             {/* Card Core (Inner Core) */}
             <div className="card-core">
@@ -1647,6 +1648,7 @@ function App() {
               </div>
             </div>
           </section>
+        )}
         </div>
       </main>
     </div>
