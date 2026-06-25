@@ -12,6 +12,13 @@ const Binary = ({ size = 18, ...props }) => (
   </svg>
 );
 
+const Video = ({ size = 18, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <polygon points="23 7 16 12 23 17 23 7" />
+    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+  </svg>
+);
+
 const Layers = ({ size = 18, ...props }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <polygon points="12 2 2 7 12 12 22 7 12 2" />
@@ -456,24 +463,42 @@ function runMonteCarloSimulation(n, k, iterations, prob = 0.5) {
 
 // 4. AST Parser & Evaluator
 function parseExpression(str) {
-  let tokens = str.replace(/\s+/g, '').match(/\d+|\+|\-|\*|\/|\(|\)/g) || [];
+  let tokens = str.replace(/\s+/g, '').match(/(?:\d+(?:\.\d+)?)|[xyzepi]|\+|\-|\*|\/|\^|log|ln|sqrt|sin|cos|tan|\(|\)/g) || [];
   let pos = 0;
 
   function parsePrimary() {
+    if (pos >= tokens.length) return { value: '0', left: null, right: null, isLeaf: true };
     let t = tokens[pos];
     if (t === '(') {
       pos++;
       let node = parseExpressionAdd();
-      pos++;
+      pos++; // Consume ')'
       return node;
+    }
+    if (['log','ln','sqrt','sin','cos','tan'].includes(t)) {
+      pos++;
+      let inner;
+      if (tokens[pos] === '(') {
+        pos++;
+        inner = parseExpressionAdd();
+        pos++;
+      } else {
+        inner = parsePrimary();
+      }
+      return { value: t, left: inner, right: null, isLeaf: false };
+    }
+    if (t === '-') { // Unary minus
+      pos++;
+      let inner = parsePrimary();
+      return { value: 'u-', left: inner, right: null, isLeaf: false };
     }
     pos++;
     return { value: t, left: null, right: null, isLeaf: true };
   }
 
-  function parseMulDiv() {
+  function parsePower() {
     let node = parsePrimary();
-    while (tokens[pos] === '*' || tokens[pos] === '/') {
+    while (pos < tokens.length && tokens[pos] === '^') {
       let op = tokens[pos];
       pos++;
       let right = parsePrimary();
@@ -482,9 +507,20 @@ function parseExpression(str) {
     return node;
   }
 
+  function parseMulDiv() {
+    let node = parsePower();
+    while (pos < tokens.length && (tokens[pos] === '*' || tokens[pos] === '/')) {
+      let op = tokens[pos];
+      pos++;
+      let right = parsePower();
+      node = { value: op, left: node, right: right, isLeaf: false };
+    }
+    return node;
+  }
+
   function parseExpressionAdd() {
     let node = parseMulDiv();
-    while (tokens[pos] === '+' || tokens[pos] === '-') {
+    while (pos < tokens.length && (tokens[pos] === '+' || tokens[pos] === '-')) {
       let op = tokens[pos];
       pos++;
       let right = parseMulDiv();
@@ -499,19 +535,39 @@ function parseExpression(str) {
 function evaluateAST(node, log = []) {
   if (!node) return 0;
   if (node.isLeaf) {
-    let val = parseFloat(node.value);
-    log.push(`Hoja detectada: valor = ${val}`);
+    let valStr = node.value;
+    let val;
+    if (valStr === 'e') val = Math.E;
+    else if (valStr === 'pi') val = Math.PI;
+    else if (['x','y','z'].includes(valStr)) val = 1;
+    else val = parseFloat(valStr);
+    log.push(`Hoja detectada: valor = ${valStr}`);
     return val;
   }
+  
   let leftVal = evaluateAST(node.left, log);
-  let rightVal = evaluateAST(node.right, log);
   let res = 0;
+  
+  if (['log','ln','sqrt','sin','cos','tan','u-'].includes(node.value)) {
+    if (node.value === 'log') res = Math.log10(leftVal);
+    else if (node.value === 'ln') res = Math.log(leftVal);
+    else if (node.value === 'sqrt') res = Math.sqrt(leftVal);
+    else if (node.value === 'sin') res = Math.sin(leftVal);
+    else if (node.value === 'cos') res = Math.cos(leftVal);
+    else if (node.value === 'tan') res = Math.tan(leftVal);
+    else if (node.value === 'u-') res = -leftVal;
+    log.push(`Operación Unaria: ${node.value}(${leftVal}) = ${res.toFixed(4)}`);
+    return res;
+  }
+  
+  let rightVal = evaluateAST(node.right, log);
   if (node.value === '+') res = leftVal + rightVal;
   else if (node.value === '-') res = leftVal - rightVal;
   else if (node.value === '*') res = leftVal * rightVal;
   else if (node.value === '/') res = leftVal / rightVal;
+  else if (node.value === '^') res = Math.pow(leftVal, rightVal);
   
-  log.push(`Operación [Postorden]: ${leftVal} ${node.value} ${rightVal} = ${res}`);
+  log.push(`Operación [Postorden]: ${leftVal} ${node.value} ${rightVal} = ${res.toFixed(4)}`);
   return res;
 }
 
@@ -1300,26 +1356,42 @@ fin func`
         {
           name: 'Postorden y Evaluación de AST',
           js: `function evaluarAST(nodo) {
-  if (typeof nodo.valor === 'number') return nodo.valor;
+  if (typeof nodo.valor === 'number' || ['x','e','pi'].includes(nodo.valor)) 
+    return obtenerValor(nodo.valor);
   
   let valIzq = evaluarAST(nodo.izq);
+  
+  // Operadores Unarios
+  if (['log','ln','sqrt','sin','cos'].includes(nodo.valor)) {
+    if (nodo.valor === 'log') return Math.log10(valIzq);
+    if (nodo.valor === 'ln') return Math.log(valIzq);
+    if (nodo.valor === 'sqrt') return Math.sqrt(valIzq);
+  }
+
   let valDer = evaluarAST(nodo.der);
   
+  // Operadores Binarios
   switch(nodo.valor) {
     case '+': return valIzq + valDer;
     case '-': return valIzq - valDer;
     case '*': return valIzq * valDer;
     case '/': return valIzq / valDer;
+    case '^': return Math.pow(valIzq, valDer);
   }
 }`,
           pseudo: `// Recorrido Bottom-Up (Postorden I-D-N)
 func evaluar_AST(nodo):
-    si nodo es hoja (numero): retornar nodo.valor
+    si nodo es hoja (numero, variable, constante): 
+        retornar su valor numérico
     
     val_izq = evaluar_AST(nodo.izq)
+    
+    si nodo.valor es funcion_unaria (log, ln, sqrt...):
+        retornar aplicar_funcion(nodo.valor, val_izq)
+
     val_der = evaluar_AST(nodo.der)
     
-    retornar operar(nodo.valor, val_izq, val_der)
+    retornar operar_binario(nodo.valor, val_izq, val_der)
 fin func`
         },
         {
@@ -1458,6 +1530,10 @@ function App() {
             <Activity className="nav-item-icon" size={16} />
             <span>Árboles y AST</span>
           </button>
+          <button className={`nav-item ${activeTab === 'videos' ? 'active' : ''}`} onClick={() => setActiveTab('videos')}>
+            <Video className="nav-item-icon" size={16} />
+            <span>Recursos y Videos</span>
+          </button>
         </nav>
 
         <div className="sidebar-footer">
@@ -1533,6 +1609,7 @@ function App() {
               {activeTab === 'bfs-dfs' && <GraphSearchPanel />}
               {activeTab === 'mst' && <MSTPanel />}
               {activeTab === 'arboles-recorridos' && <TreeASTPanel />}
+              {activeTab === 'videos' && <VideoResourcesPanel />}
             </div>
           </section>
 
@@ -1570,11 +1647,17 @@ function App() {
 
 // --- SCIENTIFIC KEYBOARD COMPONENT ---
 function ScientificKeyboard({ onKeyPress }) {
-  const keys = ['7', '8', '9', '/', 'C', '4', '5', '6', '*', '(', '1', '2', '3', '-', ')', '0', '.', '^', '+', '!'];
+  const keys = [
+    '(', ')', '^', 'sqrt', 'log', 'ln', 'C', 'DEL',
+    '7', '8', '9', '/', 'sin', 'cos', 'x', 'y',
+    '4', '5', '6', '*', 'tan', 'pi', 'z', 'e',
+    '1', '2', '3', '-', '!', '%', '[', ']',
+    '0', '.', '=', '+', '{', '}', '|', ','
+  ];
   return (
     <div className="sci-keyboard">
       {keys.map(k => (
-        <button key={k} type="button" onClick={() => onKeyPress(k)} className={`sci-key ${['+','-','*','/','^','!','(',')'].includes(k) ? 'op' : ''} ${k === 'C' ? 'clear' : ''}`}>
+        <button key={k} type="button" onClick={() => onKeyPress(k)} className={`sci-key ${['+','-','*','/','^','!','(',')','='].includes(k) ? 'op' : ''} ${['C','DEL'].includes(k) ? 'clear' : ''}`}>
           {k}
         </button>
       ))}
@@ -3293,7 +3376,9 @@ function TreeASTPanel() {
               />
               <ScientificKeyboard onKeyPress={(k) => {
                 if (k === 'C') setExpr('');
-                else setExpr(prev => prev + k);
+                else if (k === 'DEL') setExpr(prev => prev.slice(0, -1));
+                else if (k === '=') { handleParse(); handleEvaluate(); }
+                else setExpr(prev => prev + (['log','ln','sqrt','sin','cos','tan'].includes(k) ? k + '(' : k));
               }} />
             </div>
             {/* Button-in-button design */}
@@ -3307,43 +3392,58 @@ function TreeASTPanel() {
           </div>
         </form>
 
-        <div className="canvas-container" style={{ minHeight: '300px' }}>
-          <svg className="svg-canvas" viewBox="0 0 500 300">
-            {/* Premium Grid Pattern Background */}
-            <defs>
-              <pattern id="dot-grid-5" width="20" height="20" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="0.8" fill="rgba(0, 0, 0, 0.06)" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#dot-grid-5)" />
-
-            {/* Edges */}
-            {nodesList.map((n, i) => {
-              if (n.parentX !== null && n.parentY !== null) {
-                return (
-                  <line 
-                    key={`e-${i}`}
-                    x1={n.parentX} 
-                    y1={n.parentY} 
-                    x2={n.x} 
-                    y2={n.y} 
-                    className="edge-line active" 
-                  />
-                );
-              }
-              return null;
-            })}
-            
-            {/* Nodes */}
-            {nodesList.map((n, i) => (
-              <g key={`n-${i}`} transform={`translate(${n.x},${n.y})`}>
-                <circle r="16" className={`node-circle ${n.isLeaf ? 'visited' : 'active'}`} />
-                <text className="node-text">{n.name}</text>
-              </g>
-            ))}
-          </svg>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <span className="form-label" style={{ margin: 0 }}>Visualización del AST</span>
+          <div className="view-toggle-container">
+            <button type="button" className={`view-toggle-btn ${displayMode === '2D' ? 'active' : ''}`} onClick={() => setDisplayMode('2D')}>2D</button>
+            <button type="button" className={`view-toggle-btn ${displayMode === '3D' ? 'active' : ''}`} onClick={() => setDisplayMode('3D')}>3D</button>
+          </div>
         </div>
 
+        {displayMode === '2D' ? (
+          <div className="canvas-container" style={{ minHeight: '300px' }}>
+            <svg className="svg-canvas" viewBox="0 0 500 300">
+              <defs>
+                <pattern id="dot-grid-5" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="2" cy="2" r="0.8" fill="rgba(0, 0, 0, 0.06)" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#dot-grid-5)" />
+
+              {/* Edges */}
+              {nodesList.map((n, i) => {
+                if (n.parentX !== null && n.parentY !== null) {
+                  return (
+                    <line 
+                      key={`e-${i}`}
+                      x1={n.parentX} 
+                      y1={n.parentY} 
+                      x2={n.x} 
+                      y2={n.y} 
+                      className="edge-line active" 
+                    />
+                  );
+                }
+                return null;
+              })}
+              
+              {/* Nodes */}
+              {nodesList.map((n, i) => (
+                <g key={`n-${i}`} transform={`translate(${n.x},${n.y})`}>
+                  <circle r="16" className={`node-circle ${n.isLeaf ? 'visited' : 'active'}`} />
+                  <text className="node-text">{n.name}</text>
+                </g>
+              ))}
+            </svg>
+          </div>
+        ) : (
+          <div style={{ height: '300px', width: '100%', position: 'relative', marginBottom: '12px' }}>
+            <Graph3DCanvas 
+              mode="tree" 
+              nodes={nodesList.map(n => ({ name: n.name, x: n.x, y: n.y, parentX: n.parentX, parentY: n.parentY }))} 
+            />
+          </div>
+        )}
         {evalResult !== null && (
           <div className="math-block" style={{ margin: 0 }}>
             Resultado de la Evaluación = <strong style={{ color: 'var(--secondary)' }}>{evalResult}</strong>
@@ -3449,6 +3549,47 @@ function CodeViewer({ name, pseudo, js }) {
           </code>
         </pre>
       )}
+    </div>
+  );
+}
+
+// --- 0. VIDEO RESOURCES PANEL ---
+function VideoResourcesPanel() {
+  const videos = [
+    { title: "Estructuras de Datos: Árboles AST", id: "7tCNu4CnjVc", desc: "Conceptos básicos sobre Árboles de Sintaxis Abstracta." },
+    { title: "Grafos y Algoritmo de Dijkstra", id: "EFg3u_E6eHU", desc: "Explicación del algoritmo de la ruta más corta." },
+    { title: "MergeSort y Algoritmos Divide y Vencerás", id: "4VqmGXwpLqc", desc: "Clase sobre recursividad y partición de arreglos." },
+    { title: "Probabilidad y Teorema de Bayes", id: "HZGCoVF3YvM", desc: "Fundamentos de probabilidad condicional." }
+  ];
+
+  return (
+    <div className="demo-layout">
+      <div className="demo-panel" style={{ width: '100%' }}>
+        <div className="demo-title">
+          <Video size={14} /> Repositorio de Videos Educativos
+        </div>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+          Aquí encontrarás explicaciones paso a paso de los temas fundamentales de Estructuras Discretas II. Estos videos te ayudarán a afianzar los conceptos matemáticos implementados en los simuladores.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+          {videos.map((v, i) => (
+            <div key={i} className="math-block" style={{ margin: 0, padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ fontWeight: 'bold', color: 'var(--text-main)', fontSize: '14px' }}>{v.title}</div>
+              <iframe 
+                width="100%" 
+                height="180" 
+                src={`https://www.youtube.com/embed/${v.id}`} 
+                title={v.title} 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen
+                style={{ borderRadius: '6px' }}
+              ></iframe>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{v.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

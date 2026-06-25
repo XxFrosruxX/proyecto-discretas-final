@@ -26,6 +26,7 @@ export default function Graph3DCanvas({
   activeEdges = []
 }) {
   const containerRef = useRef(null);
+  const controlsRef = useRef(null);
 
   // Helper to create high-quality billboard text sprites
   const createTextSprite = (text, color = '#111111') => {
@@ -90,6 +91,7 @@ export default function Graph3DCanvas({
     controls.maxPolarAngle = Math.PI; // Full rotation
     controls.minDistance = 50;
     controls.maxDistance = 450;
+    controlsRef.current = controls;
 
     // 5. Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
@@ -315,20 +317,34 @@ export default function Graph3DCanvas({
     };
   }, [nodes, edges, activeNode, visitedNodes, highlightNode, mstEdges, activeEdges, mode]);
 
+  const handleZoom = (delta) => {
+    if (controlsRef.current && controlsRef.current.object) {
+      const camera = controlsRef.current.object;
+      const target = controlsRef.current.target;
+      const dir = new THREE.Vector3().subVectors(camera.position, target).normalize();
+      camera.position.addScaledVector(dir, delta);
+      controlsRef.current.update();
+    }
+  };
+
   return (
-    <div 
-      ref={containerRef} 
-      className="canvas-container-3d" 
-      style={{ 
-        width: '100%', 
-        height: '100%', 
-        position: 'relative', 
-        minHeight: '280px',
-        backgroundColor: '#F7F6F3',
-        borderRadius: '8px',
-        border: '1px solid #EAEAEA',
-        overflow: 'hidden'
-      }} 
-    />
+    <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '280px' }}>
+      <div 
+        ref={containerRef}
+        className="canvas-container-3d" 
+        style={{ 
+          width: '100%', 
+          height: '100%', 
+          backgroundColor: '#F7F6F3',
+          borderRadius: '8px',
+          border: '1px solid #EAEAEA',
+          overflow: 'hidden'
+        }} 
+      />
+      <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 10 }}>
+        <button className="btn btn-secondary btn-sm" onClick={() => handleZoom(-30)} style={{ width: '32px', height: '32px', padding: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px' }}>+</button>
+        <button className="btn btn-secondary btn-sm" onClick={() => handleZoom(30)} style={{ width: '32px', height: '32px', padding: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px' }}>-</button>
+      </div>
+    </div>
   );
 }
