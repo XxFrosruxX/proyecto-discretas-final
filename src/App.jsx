@@ -3597,72 +3597,125 @@ function CodeViewer({ name, pseudo, js }) {
 
 // --- 0. VIDEO RESOURCES PANEL ---
 function VideoResourcesPanel() {
-  const [filter, setFilter] = useState('Todos');
+  const [catFilter, setCatFilter] = useState('Todos');
+  const [langFilter, setLangFilter] = useState('Todos');
 
   const videos = [
-    { title: "Árboles Binarios (BST)", id: "ZnhCGkM1kL4", desc: "Conceptos básicos sobre árboles binarios de búsqueda y su funcionamiento.", category: "Árboles" },
-    { title: "Árboles AVL y Rotaciones", id: "jDM6_TnYIqE", desc: "Explicación visual de balanceo en Árboles AVL mediante rotaciones.", category: "Árboles" },
-    { title: "Combinatoria Básica", id: "VwQz0oBqjU8", desc: "Aprende las diferencias entre permutaciones y combinaciones.", category: "Matemáticas" },
-    { title: "Triángulo de Pascal", id: "7rA1X8Z0V1k", desc: "Propiedades y usos del Triángulo de Pascal en combinatoria.", category: "Matemáticas" },
-    { title: "Probabilidad Condicional", id: "IBmR3XJ_a6w", desc: "Conceptos clave de probabilidad condicional y sucesos dependientes.", category: "Probabilidad" },
-    { title: "Teorema de Bayes", id: "HZGCoVF3YvM", desc: "Resolución de problemas utilizando el Teorema de Bayes.", category: "Probabilidad" },
-    { title: "Principio del Palomar", id: "FwDXZZc0C9g", desc: "Explicación del Principio de las Casillas o de Dirichlet.", category: "Matemáticas" },
-    { title: "Hashing y Colisiones", id: "KyUTuwz_b7Q", desc: "Introducción a Tablas Hash y técnicas de resolución de colisiones.", category: "Estructuras" },
-    { title: "Algoritmo MergeSort", id: "4VqmGXwpLqc", desc: "Algoritmo de ordenamiento por mezcla y Divide y Vencerás.", category: "Algoritmos" },
-    { title: "Teorema Maestro", id: "KzQ0JjB-g3o", desc: "Cómo calcular la complejidad en recurrencias con el Teorema Maestro.", category: "Algoritmos" },
-    { title: "Introducción a los Grafos", id: "eQAQniwth5M", desc: "Definiciones fundamentales de grafos, vértices y aristas.", category: "Grafos" },
-    { title: "Isomorfismo de Grafos", id: "0v9-zR4d5uM", desc: "Cómo verificar isomorfismo usando matrices de adyacencia.", category: "Grafos" },
-    { title: "Recorridos BFS y DFS", id: "pcKY4hjDrxk", desc: "Búsqueda en Anchura y Profundidad en grafos y árboles.", category: "Grafos" },
-    { title: "Árbol de Expansión Mínima (MST)", id: "cplfcGZmX7I", desc: "Algoritmos de Prim y Kruskal explicados gráficamente.", category: "Grafos" },
-    { title: "Estructuras de Datos: Árboles AST", id: "7tCNu4CnjVc", desc: "Conceptos básicos sobre Árboles de Sintaxis Abstracta.", category: "Árboles" }
+    // --- ESPAÑOL ---
+    { title: "Árboles Binarios (BST)", id: "ZnhCGkM1kL4", desc: "Conceptos básicos sobre árboles binarios de búsqueda y su funcionamiento.", category: "Árboles", lang: "ES" },
+    { title: "Árboles AVL y Rotaciones", id: "jDM6_TnYIqE", desc: "Explicación visual de balanceo en Árboles AVL mediante rotaciones.", category: "Árboles", lang: "ES" },
+    { title: "Combinatoria Básica", id: "VwQz0oBqjU8", desc: "Aprende las diferencias entre permutaciones y combinaciones.", category: "Matemáticas", lang: "ES" },
+    { title: "Triángulo de Pascal", id: "7rA1X8Z0V1k", desc: "Propiedades y usos del Triángulo de Pascal en combinatoria.", category: "Matemáticas", lang: "ES" },
+    { title: "Probabilidad Condicional", id: "IBmR3XJ_a6w", desc: "Conceptos clave de probabilidad condicional y sucesos dependientes.", category: "Probabilidad", lang: "ES" },
+    { title: "Teorema de Bayes", id: "HZGCoVF3YvM", desc: "Resolución de problemas utilizando el Teorema de Bayes.", category: "Probabilidad", lang: "ES" },
+    { title: "Principio del Palomar", id: "FwDXZZc0C9g", desc: "Explicación del Principio de las Casillas o de Dirichlet.", category: "Matemáticas", lang: "ES" },
+    { title: "Hashing y Colisiones", id: "KyUTuwz_b7Q", desc: "Introducción a Tablas Hash y técnicas de resolución de colisiones.", category: "Estructuras", lang: "ES" },
+    { title: "Algoritmo MergeSort", id: "4VqmGXwpLqc", desc: "Algoritmo de ordenamiento por mezcla y Divide y Vencerás.", category: "Algoritmos", lang: "ES" },
+    { title: "Teorema Maestro", id: "KzQ0JjB-g3o", desc: "Cómo calcular la complejidad en recurrencias con el Teorema Maestro.", category: "Algoritmos", lang: "ES" },
+    { title: "Introducción a los Grafos", id: "eQAQniwth5M", desc: "Definiciones fundamentales de grafos, vértices y aristas.", category: "Grafos", lang: "ES" },
+    { title: "Isomorfismo de Grafos", id: "0v9-zR4d5uM", desc: "Cómo verificar isomorfismo usando matrices de adyacencia.", category: "Grafos", lang: "ES" },
+    { title: "Recorridos BFS y DFS", id: "pcKY4hjDrxk", desc: "Búsqueda en Anchura y Profundidad en grafos y árboles.", category: "Grafos", lang: "ES" },
+    { title: "Árbol de Expansión Mínima (MST)", id: "cplfcGZmX7I", desc: "Algoritmos de Prim y Kruskal explicados gráficamente.", category: "Grafos", lang: "ES" },
+    { title: "Estructuras de Datos: Árboles AST", id: "7tCNu4CnjVc", desc: "Conceptos básicos sobre Árboles de Sintaxis Abstracta.", category: "Árboles", lang: "ES" },
+    
+    // --- ENGLISH ---
+    { title: "Binary Search Trees (BST)", id: "pYT9F8_LFTM", desc: "Abdul Bari explains the logic behind binary search trees.", category: "Árboles", lang: "EN" },
+    { title: "AVL Trees Insertions", id: "jDM6_TnYIqE", desc: "Abdul Bari covers AVL tree rotations and insertions.", category: "Árboles", lang: "EN" },
+    { title: "Permutations and Combinations", id: "XqBTouuRiyE", desc: "Clear breakdown of combinations and permutations formulas.", category: "Matemáticas", lang: "EN" },
+    { title: "Conditional Probability", id: "ibINrxJLvlM", desc: "An intuitive introduction to Conditional Probability.", category: "Probabilidad", lang: "EN" },
+    { title: "Bayes Theorem", id: "HZGCoVF3YvM", desc: "Visual guide to Bayes theorem by 3Blue1Brown.", category: "Probabilidad", lang: "EN" },
+    { title: "Pigeonhole Principle", id: "ROzS509bQ8I", desc: "Explanation of the Pigeonhole Principle with examples.", category: "Matemáticas", lang: "EN" },
+    { title: "Hash Tables", id: "shs0KM3wKv8", desc: "Introduction to Hash Tables and Hash Functions.", category: "Estructuras", lang: "EN" },
+    { title: "Merge Sort Algorithm", id: "4VqmGXwpLqc", desc: "Visualization of the Merge Sort divide and conquer algorithm.", category: "Algoritmos", lang: "EN" },
+    { title: "Master Theorem", id: "OynWkEj0S-s", desc: "How to use the Master Theorem to find time complexity.", category: "Algoritmos", lang: "EN" },
+    { title: "Graph Theory Introduction", id: "LFKZLXVO-Bg", desc: "Introduction to the math and terms of Graph Theory.", category: "Grafos", lang: "EN" },
+    { title: "Graph Isomorphism", id: "UCle3Sm4cC8", desc: "How to determine if two graphs are isomorphic.", category: "Grafos", lang: "EN" },
+    { title: "BFS and DFS Algorithms", id: "pcKY4hjDrxk", desc: "Abdul Bari explains Graph Traversals (Breadth & Depth First).", category: "Grafos", lang: "EN" },
+    { title: "Prim's and Kruskal's (MST)", id: "4ZlIGy1oxJU", desc: "Minimum Spanning Tree algorithms explained.", category: "Grafos", lang: "EN" },
+    { title: "Abstract Syntax Trees (AST)", id: "QeT1T3j_Q9M", desc: "Introduction to compilers and AST parsing.", category: "Árboles", lang: "EN" }
   ];
 
   const categories = ['Todos', ...new Set(videos.map(v => v.category))];
-  const filteredVideos = filter === 'Todos' ? videos : videos.filter(v => v.category === filter);
+  const languages = ['Todos', 'ES', 'EN'];
+  
+  const filteredVideos = videos.filter(v => {
+    const matchCat = catFilter === 'Todos' || v.category === catFilter;
+    const matchLang = langFilter === 'Todos' || v.lang === langFilter;
+    return matchCat && matchLang;
+  });
 
   return (
-    <div className="demo-layout">
-      <div className="demo-panel" style={{ width: '100%' }}>
-        <div className="demo-title">
-          <Video size={14} /> Repositorio de Videos Educativos
-        </div>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
-          Aquí encontrarás explicaciones paso a paso de todos los temas fundamentales de Estructuras Discretas II. Estos videos te ayudarán a afianzar los conceptos matemáticos implementados en los simuladores.
-        </p>
+    <div className="demo-panel" style={{ width: '100%', maxWidth: '100%', margin: 0 }}>
+      <div className="demo-title">
+        <Video size={14} /> Repositorio de Videos Educativos
+      </div>
+      <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+        Aquí encontrarás explicaciones paso a paso de todos los temas fundamentales de Estructuras Discretas II. Estos videos te ayudarán a afianzar los conceptos matemáticos implementados en los simuladores.
+      </p>
 
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {categories.map(cat => (
-            <button 
-              key={cat} 
-              className={`btn btn-sm ${filter === cat ? 'btn-primary' : 'btn-secondary'}`}
-              onClick={() => setFilter(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-main)', width: '60px' }}>Categoría:</span>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {categories.map(cat => (
+              <button 
+                key={cat} 
+                className={`btn btn-sm ${catFilter === cat ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setCatFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-main)', width: '60px' }}>Idioma:</span>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {languages.map(lang => (
+              <button 
+                key={lang} 
+                className={`btn btn-sm ${langFilter === lang ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setLangFilter(lang)}
+              >
+                {lang === 'ES' ? 'Español' : lang === 'EN' ? 'Inglés' : 'Todos'}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-          {filteredVideos.map((v, i) => (
-            <div key={i} className="math-block" style={{ margin: 0, padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ fontWeight: 'bold', color: 'var(--text-main)', fontSize: '14px', display: 'flex', alignItems: 'center' }}>
-                <span className="theme-badge" style={{ padding: '2px 6px', fontSize: '10px', marginRight: '6px' }}>{v.category}</span>
-                {v.title}
-              </div>
-              <iframe 
-                width="100%" 
-                height="180" 
-                src={`https://www.youtube.com/embed/${v.id}`} 
-                title={v.title} 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen
-                style={{ borderRadius: '6px' }}
-              ></iframe>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{v.desc}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+        {filteredVideos.map((v, i) => (
+          <div key={i} className="math-block" style={{ margin: 0, padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', background: 'var(--bg-layer-2)', border: '1px solid var(--border)' }}>
+            <div style={{ fontWeight: '600', color: 'var(--text-main)', fontSize: '15px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <span style={{ lineHeight: '1.4' }}>{v.title}</span>
+              <span className="theme-badge" style={{ padding: '2px 6px', fontSize: '10px', marginLeft: '12px', flexShrink: 0, background: v.lang === 'EN' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(59, 130, 246, 0.1)', color: v.lang === 'EN' ? '#ef4444' : '#3b82f6', border: '1px solid', borderColor: v.lang === 'EN' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.2)' }}>
+                {v.lang}
+              </span>
             </div>
-          ))}
-        </div>
+            <iframe 
+              width="100%" 
+              height="200" 
+              src={`https://www.youtube.com/embed/${v.id}`} 
+              title={v.title} 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+              style={{ borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)' }}
+            ></iframe>
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span>{v.desc}</span>
+              <span className="theme-badge" style={{ padding: '2px 6px', fontSize: '10px', opacity: 0.8 }}>{v.category}</span>
+            </div>
+          </div>
+        ))}
+        
+        {filteredVideos.length === 0 && (
+          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', gridColumn: '1 / -1' }}>
+            No se encontraron videos para los filtros seleccionados.
+          </div>
+        )}
       </div>
     </div>
   );
