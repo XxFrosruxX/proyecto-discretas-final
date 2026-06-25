@@ -3595,3 +3595,4 @@ function VideoResourcesPanel() {
 }
 
 export default App;
+PSEUDOCODES['videos'] = { title: 'Recursos y Videos Educativos', description: 'Colección de videos recomendados para comprender visualmente los conceptos teóricos y matemáticos de Estructuras Discretas II.', instructions: 'Selecciona y reproduce cualquiera de los videos directamente en esta plataforma para repasar los temas de Árboles, Grafos, Recurrencias y Probabilidad.', algorithms: [], usageSteps: ['Explora la lista de videos disponibles.', 'Presiona el botón de Play en cualquier recuadro para iniciar la reproducción.', 'Aplica los conceptos aprendidos en las otras calculadoras del simulador.'] };
